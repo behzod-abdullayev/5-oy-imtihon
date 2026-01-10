@@ -11,6 +11,7 @@ const authRouter = require("./router/auth.routes");
 const profileRouter = require("./router/profile.routes");
 const categoryRouter = require("./router/category.routes");
 const logger = require("./utils/logger");
+const carRouter = require("./router/car.routes");
 
 const app = express();
 
@@ -33,6 +34,7 @@ connectDB();
 app.use(authRouter);
 app.use(profileRouter);
 app.use(categoryRouter);
+app.use(carRouter)
 
 app.use(errorHandler);
 

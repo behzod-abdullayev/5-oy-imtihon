@@ -1,5 +1,7 @@
+
 const CustomErrorHandler = require("../utils/custom-error-handler");
 const fs = require("fs");
+const { carValidator } = require("../validator/car.validator");
 
 module.exports = (req, res, next) => {
   if (req.body.data) {

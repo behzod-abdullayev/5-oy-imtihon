@@ -1,28 +1,26 @@
 const Car = require("../schema/car.schema");
 const CustomErrorHandler = require("../utils/custom-error-handler");
 
-// 1. get All
+// 1. get all
 const getAllCars = async (req, res, next) => {
   try {
     const cars = await Car.find()
-      .populate("category", "name")
       .populate("createdBy", "username email");
-
     res.status(200).json({ success: true, data: cars });
   } catch (error) {
     next(error);
   }
 };
 
-// 2. get One
+// 2. get one
 const getCarById = async (req, res, next) => {
   try {
-    const car = await Car.findById(req.params.id)
-      .populate("category", "name")
-      .populate("createdBy", "username");
+    const car = await Car.findById(req.params.id).populate(
+      "createdBy",
+      "username"
+    );
 
     if (!car) return next(CustomErrorHandler.NotFound("Mashina topilmadi"));
-
     res.status(200).json({ success: true, data: car });
   } catch (error) {
     next(error);
@@ -32,29 +30,24 @@ const getCarById = async (req, res, next) => {
 // 3. add
 const addCar = async (req, res, next) => {
   try {
-    const { category, brand, name, price, color, year, distance, description } =
-      req.body;
-
-    const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
+    const getFilePath = (fieldName) => {
+      return req.files && req.files[fieldName]
+        ? req.files[fieldName][0].path.replace(/\\/g, "/")
+        : null;
+    };
 
     const newCar = new Car({
-      category,
-      brand,
-      name,
-      price,
-      color,
-      year,
-      distance,
-      description,
-      image: imagePath,
+      ...req.body,
+      interiorImage360: getFilePath("interiorImage360"),
+      exteriorImage360: getFilePath("exteriorImage360"),
+      carTypeImage: getFilePath("carTypeImage"),
       createdBy: req.user.id,
     });
 
     await newCar.save();
-
     res.status(201).json({
       success: true,
-      message: "Mashina muvaffaqiyatli qo'shildi",
+      message: "Mashina muvaffaqiyatli saqlandi",
       data: newCar,
     });
   } catch (error) {
@@ -62,17 +55,59 @@ const addCar = async (req, res, next) => {
   }
 };
 
-// 4. delete
-const deleteCar = async (req, res, next) => {
+// 4. update
+const updateCar = async (req, res, next) => {
   try {
-    const car = await Car.findById(req.params.id);
+    const { id } = req.params;
+    const car = await Car.findById(id);
 
     if (!car) return next(CustomErrorHandler.NotFound("Mashina topilmadi"));
 
     if (car.createdBy.toString() !== req.user.id && req.user.role !== "admin") {
-      return next(
-        CustomErrorHandler.Forbidden("Sizda bu mashinani o'chirish huquqi yo'q")
-      );
+      return next(CustomErrorHandler.Forbidden("Sizda tahrirlash huquqi yo'q"));
+    }
+
+    const updateData = { ...req.body };
+
+    if (req.files) {
+      if (req.files.interiorImage360)
+        updateData.interiorImage360 =
+          req.files.interiorImage360[0].path.replace(/\\/g, "/");
+      if (req.files.exteriorImage360)
+        updateData.exteriorImage360 =
+          req.files.exteriorImage360[0].path.replace(/\\/g, "/");
+      if (req.files.carTypeImage)
+        updateData.carTypeImage = req.files.carTypeImage[0].path.replace(
+          /\\/g,
+          "/"
+        );
+    }
+
+    const updatedCar = await Car.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Ma'lumotlar yangilandi",
+        data: updatedCar,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// 5.delete
+const deleteCar = async (req, res, next) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    if (!car) return next(CustomErrorHandler.NotFound("Mashina topilmadi"));
+
+    if (car.createdBy.toString() !== req.user.id && req.user.role !== "admin") {
+      return next(CustomErrorHandler.Forbidden("Sizda o'chirish huquqi yo'q"));
     }
 
     await Car.findByIdAndDelete(req.params.id);
@@ -82,6 +117,7 @@ const deleteCar = async (req, res, next) => {
   }
 };
 
+// 6. Like
 const toggleLike = async (req, res, next) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -90,18 +126,15 @@ const toggleLike = async (req, res, next) => {
     const userId = req.user.id;
     const isLiked = car.likes.includes(userId);
 
-    if (isLiked) {
-      car.likes = car.likes.filter((id) => id.toString() !== userId);
-    } else {
-      car.likes.push(userId);
-    }
+    isLiked ? car.likes.pull(userId) : car.likes.push(userId);
 
     await car.save();
-    res.status(200).json({
-      success: true,
-      message: isLiked ? "Like olindi" : "Like bosildi",
-      likesCount: car.likes.length,
-    });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: isLiked ? "Like olindi" : "Like bosildi",
+      });
   } catch (error) {
     next(error);
   }
@@ -109,6 +142,7 @@ const toggleLike = async (req, res, next) => {
 
 module.exports = {
   addCar,
+  updateCar,
   getAllCars,
   getCarById,
   deleteCar,
