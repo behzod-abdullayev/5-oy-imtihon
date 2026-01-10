@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
             return next(CustomErrorHandler.UnAuthorized("Token muddati tugagan!"));
         }
         next(CustomErrorHandler.UnAuthorized("Yaroqsiz token!"));
-    }
+    } 
 };
 
 // isAdmin

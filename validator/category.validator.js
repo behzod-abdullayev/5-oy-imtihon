@@ -16,7 +16,7 @@ const categoryValidator = joi.object({
   founder: joi.string().trim().required().messages({
     "any.required": "Asoschi ismini kiritish shart"
   }),
-  description: joi.string().min(3).max(150).trim()
+  description: joi.string().min(3).max(200).trim()
 });
 
 module.exports = categoryValidator;

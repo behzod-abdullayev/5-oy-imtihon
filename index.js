@@ -10,6 +10,7 @@ const errorHandler = require("./middleware/error-handler");
 const authRouter = require("./router/auth.routes");
 const profileRouter = require("./router/profile.routes");
 const categoryRouter = require("./router/category.routes");
+const logger = require("./utils/logger");
 
 const app = express();
 
@@ -22,7 +23,13 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 
 connectDB();
+// logger.warn("warning logger")
+// logger.info("info logger")
+// logger.debug("debug logger")
+// logger.error
 
+
+//router
 app.use(authRouter);
 app.use(profileRouter);
 app.use(categoryRouter);

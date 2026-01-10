@@ -1,42 +1,16 @@
-const winston = require("winston");
-require("winston-mongodb"); 
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf, simple } = format;
+require("winston-mongodb")
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp({
-      format: "YYYY-MM-DD HH:mm:ss",
-    }),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.File({
-      filename: "logs/error.log",
-      level: "error",
-    }),
-    new winston.transports.File({
-      filename: "logs/combined.log",
-    }),
-
-    new winston.transports.MongoDB({
-      db: process.env.MONGO_URI,
-      options: {}, 
-      collection: "server_logs",
-      level: "error",
-      tryReconnect: true 
-    }),
-  ],
+const logger = createLogger({
+  level: 'debug',
+   format: format.combine(
+  format.simple()
+),
+   transports: [
+    new transports.Console(),
+    new transports.File({filename: "log/universal.log"}),
+    new transports.MongoDB({db: process.env.MONGO_URI})
+   ]
 });
-
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    })
-  );
-}
-
 module.exports = logger;

@@ -40,25 +40,34 @@ const getOneCategory = async (req, res, next) => {
 
 // 3. ADD CATEGORY
 const addCategory = async (req, res, next) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: "Rasm yuklanmadi" });
-        }
-        const { name, founder, foundedYear, description } = req.body;
+  try {
+    const { name, founder, foundedYear, description } = req.body;
 
-        const newCategory = await categorySchema.create({
-            name,
-            founder,
-            foundedYear,
-            description,
-            image: `/uploads/${req.file.filename}`
-        });
+    // 1. Rasm yo'lini tekshiramiz (agar multer ishlatsangiz)
+    const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
 
-        res.status(201).json({ success: true, data: newCategory });
-    } catch (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
-        next(error);
-    }
+    // 2. YANGI KATEGORIYA YARATISH
+    const newCategory = new Category({
+      name,
+      founder,
+      foundedYear,
+      description,
+      image: imagePath,
+      // MANA SHU QISM ID-ni AVTOMATIK BIRIKTIRADI:
+      createdBy: req.user.id 
+    });
+
+    // 3. Bazaga saqlash
+    await newCategory.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Kategoriya muvaffaqiyatli qo'shildi",
+      data: newCategory
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 //update

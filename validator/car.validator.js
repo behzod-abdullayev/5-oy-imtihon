@@ -1,64 +1,32 @@
 const Joi = require("joi");
-const joi = require("joi");
 
-const carValidator = joi.object({
-  brand: joi.string().trim().required().messages({
-    "string.empty": "Markani tanlash shart",
-    "any.required": "Marka maydoni bo'sh bo'lishi mumkin emas",
+const carValidator = Joi.object({
+  category: Joi.string().hex().length(24).required().messages({
+    "string.length": "Kategoriya ID-si noto'g'ri formatda",
+    "any.required": "Kategoriyani (Brendni) tanlash majburiy",
+  }),
+  brand: Joi.string().trim().required().messages({
+    "string.empty": "Markani yozish shart",
   }),
   name: Joi.string().trim().min(2).max(50).required().messages({
-    "any.required": "Mashina nomi majburiy",
-    "string.min": "Mashina nomi kamida 2 ta belgidan iborat bo'lishi kerak"
+    "string.min": "Mashina nomi kamida 2 ta harf bo'lsin",
   }),
-  tint: joi.string().valid("bor", "yo'q").required().messages({
-    "any.only": "Tanirovkaga faqat 'bor' yoki 'yo'q' kiritish mumkin",
-  }),
-  engine: joi.number().precision(1).positive().required().messages({
-    "number.base": "Motor hajmi raqam bo'lishi kerak",
-    "number.positive": "Motor hajmi musbat bo'lishi shart",
-  }),
-  year: joi
-    .number()
+  tint: Joi.string().valid("bor", "yo'q").required(),
+  engine: Joi.number().precision(1).positive().required(),
+  year: Joi.number()
     .integer()
     .min(1800)
     .max(new Date().getFullYear())
-    .required()
-    .messages({
-      "number.min": "Yil 1850 dan kichik bo'lmasligi kerak",
-      "number.max": "Yil hozirgi yildan katta bo'lmasligi kerak",
-    }),
-  color: joi.string().trim().required().messages({
-    "string.empty": "Rangni kiriting",
-  }),
-  distance: joi.number().min(0).required().messages({
-    "number.min": "Mashina yurish masofasi kamida 0 km bo'lishi kerak",
-  }),
-  gearbook: joi.string().trim().required().messages({
-    "string.empty": "Uzatmalar qutisini kiriting",
-  }),
-  cost: joi.number().positive().required().messages({
-    "number.positive": "Mashina narxi musbat bo'lishi kerak",
-  }),
-  description: joi.string().min(3).max(1000).allow("", null).messages({
-    "string.min": "Tavsif kamida 3 ta belgidan iborat bo'lsin",
-  }),
-  interiorImage360: joi
-    .string()
-    .required()
-    .trim()
-    .messages({ "any.required": "Ichki rasm linki shart" }),
-  exteriorImage360: joi
-    .string()
-    .required()
-    .trim()
-    .messages({ "any.required": "Tashqi rasm linki shart" }),
-  carTypeImage: joi
-    .string()
-    .required()
-    .trim()
-    .messages({ "any.required": "Model rasm linki shart" }),
+    .required(),
+  color: Joi.string().trim().required(),
+  distance: Joi.number().min(0).required(),
+  gearbook: Joi.string().trim().required(),
+  cost: Joi.number().positive().required(),
+  description: Joi.string().min(3).max(1000).allow("", null),
+
+  interiorImage360: Joi.string().required().trim(),
+  exteriorImage360: Joi.string().required().trim(),
+  carTypeImage: Joi.string().required().trim(),
 });
 
-module.exports = {
-  carValidator
-};
+module.exports = { carValidator };

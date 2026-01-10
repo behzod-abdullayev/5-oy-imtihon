@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose")
+const { Schema, model, models } = require("mongoose");
 
 const categorySchema = new Schema({
     name: {
@@ -13,7 +13,7 @@ const categorySchema = new Schema({
     },
     foundedYear: {
         type: Number,
-        max: [new Date().getFullYear(), "brend  tashkil etilgan yil hozirgi yildan katta bolmasiligi kerak"],
+        max: [new Date().getFullYear(), "brend tashkil etilgan yil hozirgi yildan katta bo'lmasligi kerak"],
         trim: true
     },
     founder: {
@@ -25,11 +25,16 @@ const categorySchema = new Schema({
         type: String,
         trim: true,
         minLength: [3, "tavsif kamida 3 ta harfdan iborat bo'lishi kerak "],
-        maxLength: [150, "tavsif eng ko'pi 150 ta belgidan iborat bolishi lozim"]
+        maxLength: [200, "tavsif eng ko'pi 200 ta belgidan iborat bo'lishi lozim"]
+    },
+    // Admin bilan bog'lash uchun
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: "Profile",
+        required: true
     }
-},
-{
+}, {
     timestamps: true
-})
+});
 
-module.exports = model("Category", categorySchema)
+module.exports = models.Category || model("Category", categorySchema);
