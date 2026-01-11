@@ -13,7 +13,6 @@ const carSchema = new Schema(
     engine: { type: Number, required: true },
     gearbook: { type: String, required: true },
 
-    // 3 ta majburiy rasm yo'li
     interiorImage360: { type: String, required: true },
     exteriorImage360: { type: String, required: true },
     carTypeImage: { type: String, required: true },

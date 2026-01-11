@@ -51,19 +51,17 @@ const profileSchema = new Schema({
     },
 }, {
     timestamps: true,
-    // Virtual maydonlar JSON javobida chiqishi uchun shart:
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
 
-// Admin qo'shgan mashinalar
+
 profileSchema.virtual('myCars', {
     ref: 'Car',
     localField: '_id',
     foreignField: 'createdBy'
 });
 
-// Admin qo'shgan kategoriyalar
 profileSchema.virtual('myCategories', {
     ref: 'Category',
     localField: '_id',

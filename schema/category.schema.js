@@ -27,7 +27,6 @@ const categorySchema = new Schema({
         minLength: [3, "tavsif kamida 3 ta harfdan iborat bo'lishi kerak "],
         maxLength: [200, "tavsif eng ko'pi 200 ta belgidan iborat bo'lishi lozim"]
     },
-    // Admin bilan bog'lash uchun
     createdBy: {
         type: Schema.Types.ObjectId,
         ref: "Profile",

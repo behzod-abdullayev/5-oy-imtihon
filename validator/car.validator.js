@@ -15,7 +15,6 @@ const carValidator = Joi.object({
   price: Joi.number().positive().required(),
   description: Joi.string().min(3).max(1000).allow("", null),
 
-  // Rasmlar
   interiorImage360: Joi.any().optional(),
   exteriorImage360: Joi.any().optional(),
   carTypeImage: Joi.any().optional(),

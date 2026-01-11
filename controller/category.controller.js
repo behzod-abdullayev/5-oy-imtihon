@@ -20,18 +20,17 @@ const getOneCategory = async (req, res, next) => {
     const { id } = req.params;
 
     const category = await categorySchema.findById(id);
-    
+
     if (!category) {
       return next(CustomErrorHandler.NotFound("Bunday nomli brend topilmadi"));
     }
 
     const cars = await carSchema.find({ categoryId: id }).select("name image");
 
-
     res.status(200).json({
       success: true,
       category: category,
-      cars: cars 
+      cars: cars,
     });
   } catch (error) {
     next(error);
@@ -43,34 +42,30 @@ const addCategory = async (req, res, next) => {
   try {
     const { name, founder, foundedYear, description } = req.body;
 
-    // 1. Rasm yo'lini tekshiramiz (agar multer ishlatsangiz)
     const imagePath = req.file ? req.file.path.replace(/\\/g, "/") : null;
 
-    // 2. YANGI KATEGORIYA YARATISH
     const newCategory = new Category({
       name,
       founder,
       foundedYear,
       description,
       image: imagePath,
-      // MANA SHU QISM ID-ni AVTOMATIK BIRIKTIRADI:
-      createdBy: req.user.id 
+      createdBy: req.user.id,
     });
 
-    // 3. Bazaga saqlash
     await newCategory.save();
 
     res.status(201).json({
       success: true,
       message: "Kategoriya muvaffaqiyatli qo'shildi",
-      data: newCategory
+      data: newCategory,
     });
   } catch (error) {
     next(error);
   }
 };
 
-//update
+//4. update
 const updateCategory = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -112,7 +107,6 @@ const updateCategory = async (req, res, next) => {
     next(error);
   }
 };
-
 
 // 4. DELETE CATEGORY
 const deleteCategory = async (req, res, next) => {

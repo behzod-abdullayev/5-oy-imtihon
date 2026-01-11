@@ -15,15 +15,14 @@ const getMe = async (req, res, next) => {
     );
 
     if (req.user.role === "admin") {
-      // Bir vaqtning o'zida ham mashinalarni, ham kategoriyalarni olib kelamiz
       userQuery = userQuery
         .populate({
           path: "myCars",
-          select: "name", // Mashinaning faqat nomi
+          select: "name",
         })
         .populate({
           path: "myCategories",
-          select: "name", // Kategoriyaning faqat nomi (masalan: Chevrolet, BMW)
+          select: "name",
         });
     }
 
