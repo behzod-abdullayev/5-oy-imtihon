@@ -37,6 +37,7 @@ const getMe = async (req, res, next) => {
       data: user,
     });
   } catch (error) {
+    logger.error("getme error", error);
     next(error);
   }
 };
@@ -107,6 +108,7 @@ const updateProfile = async (req, res, next) => {
       },
     });
   } catch (error) {
+    logger.error("update profile error", error);
     next(error);
   }
 };
@@ -134,6 +136,7 @@ const changePassword = async (req, res, next) => {
       .status(200)
       .json({ success: true, message: "Parol muvaffaqiyatli o'zgartirildi" });
   } catch (error) {
+    logger.error("change password error", error);
     next(error);
   }
 };
@@ -156,6 +159,7 @@ const deleteAccaunt = async (req, res, next) => {
     await Profile.findByIdAndDelete(req.user.id);
     res.status(200).json({ success: true, message: "Akkauntingiz o'chirildi" });
   } catch (error) {
+    logger.error("deleteAccaunt error", error);
     next(error);
   }
 };

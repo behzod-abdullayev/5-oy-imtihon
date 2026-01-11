@@ -12,6 +12,7 @@ const {
 } = require("../validator/auth.validator");
 
 const { tokenGenerator, refreshToken } = require("../utils/token-generator");
+const logger = require("../utils/logger");
 
 // 1. Register
 const register = async (req, res, next) => {
@@ -49,6 +50,7 @@ const register = async (req, res, next) => {
       message: "Tasdiqlash kodi emailingizga yuborildi",
     });
   } catch (error) {
+    logger.error("Register error", error);
     next(error);
   }
 };
@@ -90,6 +92,7 @@ const verify = async (req, res, next) => {
       message: "Email muvaffaqiyatli tasdiqlandi",
     });
   } catch (error) {
+    logger.error("verify error", error);
     next(error);
   }
 };
@@ -130,6 +133,7 @@ const login = async (req, res, next) => {
       },
     });
   } catch (error) {
+    logger.error("login error", error);
     next(error);
   }
 };
@@ -157,6 +161,7 @@ const forgotPassword = async (req, res, next) => {
       message: "Tiklash kodi yuborildi",
     });
   } catch (error) {
+    logger.error("forgot password error", error);
     next(error);
   }
 };
@@ -192,6 +197,7 @@ const resetPassword = async (req, res, next) => {
       message: "Parol muvaffaqiyatli yangilandi",
     });
   } catch (error) {
+    logger.error("resent password error", error);
     next(error);
   }
 };
@@ -229,6 +235,7 @@ const resendOtp = async (req, res, next) => {
       message: "tasdiqlash kodi emailingizga yuborildi",
     });
   } catch (error) {
+    logger.error("resend otp error", error);
     next(error);
   }
 };

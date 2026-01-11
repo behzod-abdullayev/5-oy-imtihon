@@ -8,6 +8,7 @@ const getAllCars = async (req, res, next) => {
       .populate("createdBy", "username email");
     res.status(200).json({ success: true, data: cars });
   } catch (error) {
+    logger.error("get error", error);
     next(error);
   }
 };
@@ -23,6 +24,7 @@ const getCarById = async (req, res, next) => {
     if (!car) return next(CustomErrorHandler.NotFound("Mashina topilmadi"));
     res.status(200).json({ success: true, data: car });
   } catch (error) {
+    logger.error("get_one error", error);
     next(error);
   }
 };
@@ -51,6 +53,7 @@ const addCar = async (req, res, next) => {
       data: newCar,
     });
   } catch (error) {
+    logger.error("add error", error);
     next(error);
   }
 };
@@ -96,6 +99,7 @@ const updateCar = async (req, res, next) => {
         data: updatedCar,
       });
   } catch (error) {
+    logger.error("update error", error);
     next(error);
   }
 };
@@ -113,6 +117,7 @@ const deleteCar = async (req, res, next) => {
     await Car.findByIdAndDelete(req.params.id);
     res.status(200).json({ success: true, message: "Mashina o'chirildi" });
   } catch (error) {
+    logger.error("delete error", error);
     next(error);
   }
 };
@@ -136,6 +141,7 @@ const toggleLike = async (req, res, next) => {
         message: isLiked ? "Like olindi" : "Like bosildi",
       });
   } catch (error) {
+    logger.error("like error", error);
     next(error);
   }
 };

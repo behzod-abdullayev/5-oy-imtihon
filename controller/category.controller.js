@@ -10,6 +10,7 @@ const getAllCategories = async (req, res, next) => {
     const categories = await Category.find();
     res.status(200).json(categories);
   } catch (error) {
+    logger.error("get error", error);
     next(error);
   }
 };
@@ -33,6 +34,7 @@ const getOneCategory = async (req, res, next) => {
       cars: cars,
     });
   } catch (error) {
+    logger.error("get_one error", error);
     next(error);
   }
 };
@@ -61,6 +63,7 @@ const addCategory = async (req, res, next) => {
       data: newCategory,
     });
   } catch (error) {
+    logger.error("add error", error);
     next(error);
   }
 };
@@ -104,6 +107,7 @@ const updateCategory = async (req, res, next) => {
       data: updatedCategory,
     });
   } catch (error) {
+    logger.error("update error", error);
     next(error);
   }
 };
@@ -143,6 +147,7 @@ const deleteCategory = async (req, res, next) => {
       message: "Brend va unga tegishli barcha mashinalar o'chirildi",
     });
   } catch (error) {
+    logger.error("delete error", error);
     next(error);
   }
 };
